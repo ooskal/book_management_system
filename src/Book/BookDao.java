@@ -3,9 +3,11 @@ package Book;
 import java.sql.*;
 import java.util.Scanner;
 
-public class BookDao extends Book {
+public class BookDao  {
     private Connection con = null;
     private Statement stmt = null;
+
+    Book book = new Book();
 
 
 
@@ -19,21 +21,21 @@ public class BookDao extends Book {
 
             System.out.println(">> 추가메뉴를 선택하셨습니다.");
             System.out.println(">> 제목을 입력해주세요.");
-            setTitle(sc.nextLine());
+            book.setTitle(sc.nextLine());
             System.out.println(">> 작가를 입력해주세요.");
-            setAuthor(sc.nextLine());
+            book.setAuthor(sc.nextLine());
             System.out.println(">> 출판사를 입력해주세요.");
-            setPublisher(sc.nextLine());
+            book.setPublisher(sc.nextLine());
             System.out.println(">> 가격을 입력해주세요.");
-            setPrice(sc.nextInt());
+            book.setPrice(sc.nextInt());
 
             PreparedStatement ps = con.prepareStatement("insert into book value (?,?,?,?,?)");
 
             ps.setInt(1,0);
-            ps.setString(2, getTitle());
-            ps.setString(3, getAuthor());
-            ps.setString(4,getPublisher());
-            ps.setInt(5,getPrice());
+            ps.setString(2, book.getTitle());
+            ps.setString(3, book.getAuthor());
+            ps.setString(4,book.getPublisher());
+            ps.setInt(5,book.getPrice());
 
 
             ps.executeUpdate();
@@ -114,20 +116,20 @@ public class BookDao extends Book {
 
             if(rs.next()) {
                 System.out.println(">> 제목");
-                setTitle(sc.nextLine());
+                book.setTitle(sc.nextLine());
                 System.out.println(">> 작가");
-                setAuthor(sc.nextLine());
+                book.setAuthor(sc.nextLine());
                 System.out.println(">> 출판사");
-                setPublisher(sc.nextLine());
+                book.setPublisher(sc.nextLine());
                 System.out.println(">> 가격");
-                setPrice(sc.nextInt());
+                book.setPrice(sc.nextInt());
 
                 sql = "update book set title=?, author=?,publisher=?,price=? where book_num=";
                 ps = con.prepareStatement(sql+num);
-                ps.setString(1,getTitle());
-                ps.setString(2,getAuthor());
-                ps.setString(3,getPublisher());
-                ps.setInt(4,getPrice());
+                ps.setString(1,book.getTitle());
+                ps.setString(2,book.getAuthor());
+                ps.setString(3,book.getPublisher());
+                ps.setInt(4,book.getPrice());
             } else {
                 System.out.println("번호가 존재하지 않습니다.");
             }
