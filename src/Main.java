@@ -35,8 +35,9 @@ public class Main {
                 if (user == 1) {
                     state = 1;
                     Guest guest = new Guest();
-
+                    UserDao userDao = new UserDao();
                     System.out.println(">> 일반 사용자로 로그인");
+                    userDao.login();
                     System.out.println("************** 도서 대여 시스템 **************");
                     System.out.println(">> 1. 대여  2. 반납  3. 조회  4. 종료 ");
                     System.out.println(">> 메뉴를 선택해주세요.");
@@ -44,13 +45,13 @@ public class Main {
                     while (num != 4) {
 
                         num = sc.nextInt();
-
+                        BookDao bookDao = new BookDao();
                         switch (num) {
                             case 1:
-
+                                bookDao.rentBook();
                                 break;
                             case 2:
-
+                                bookDao.returnBook();
                                 break;
                             case 3:
 

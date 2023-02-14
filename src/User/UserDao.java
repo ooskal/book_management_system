@@ -10,17 +10,20 @@ public class UserDao {
 
     User user = new User();
 
+    String url = "jdbc:mysql://127.0.0.1:3306/Book";
+    String u = "root";
+    String pw = "753698";
 
-    public UserDao() {
 
-    }
+
+    public UserDao() {}
 
     public void inserUser() {
 
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             System.out.println(">> 회원가입 메뉴를 선택하셨습니다..");
@@ -56,7 +59,7 @@ public class UserDao {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             System.out.println(">> 삭제메뉴를 선택하셨습니다.");
@@ -89,7 +92,7 @@ public class UserDao {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             PreparedStatement ps = con.prepareStatement("select * from user");
@@ -110,6 +113,53 @@ public class UserDao {
             System.out.println("SQLState: " + sqpx.getSQLState());
 
         }
+
+    }
+
+    public void  login() throws ClassNotFoundException, SQLException {
+        Scanner sc = new Scanner(System.in);
+        ResultSet rs;
+        PreparedStatement ps ;
+
+        try{
+            Connection con = null;
+            con = DriverManager.getConnection(url,u,pw);
+
+            System.out.println(">> 로그인 메뉴를 선택하셨습니다.");
+            System.out.println(">> 아이디를 입력해주세요.");
+            user.setId(sc.nextLine());
+            System.out.println(">> 비밀번호를 입력해주세요.");
+            user.setPw(sc.nextLine());
+
+
+
+            ps = con.prepareStatement("select pw from user where id=?");
+
+            ps.setString(1, user.getId());
+            rs = ps.executeQuery();
+
+            if(rs.next()) {
+
+                if(rs.getString(1).contentEquals(user.getPw())) {
+                    System.out.println("로그인 성공");
+                    ps = con.prepareStatement("select user_num from user where id = ?");
+                    ps.setString(1, user.getId());
+                    rs = ps.executeQuery();
+                    while(rs.next()) {
+                       user.setNum(rs.getInt(1));
+                    }
+
+
+                } else{
+
+                }
+            }
+
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

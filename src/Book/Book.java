@@ -7,9 +7,7 @@ public class Book {
     private String publisher;
     private int price;
 
-    public Book() {
-
-    }
+    public Book() {}
 
     public Book(String title, String author, String publisher, int price){
         this.title = title;

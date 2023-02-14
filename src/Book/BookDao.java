@@ -1,6 +1,9 @@
 package Book;
 
+import User.User;
+
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class BookDao  {
@@ -9,6 +12,10 @@ public class BookDao  {
 
     Book book = new Book();
 
+    String url = "jdbc:mysql://127.0.0.1:3306/Book";
+    String u = "root";
+    String pw = "753698";
+
 
 
     // 추가
@@ -16,7 +23,7 @@ public class BookDao  {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             System.out.println(">> 추가메뉴를 선택하셨습니다.");
@@ -58,7 +65,7 @@ public class BookDao  {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             System.out.println(">> 삭제메뉴를 선택하셨습니다.");
@@ -70,7 +77,7 @@ public class BookDao  {
             int num = sc.nextInt();
 
             PreparedStatement ps = con.prepareStatement("delete from book where book_num="+num);
-            //where id="+uid  부분을 where id='"+uid"'"
+
 
             ps.executeUpdate();
 
@@ -95,7 +102,7 @@ public class BookDao  {
 
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             System.out.println(">> 수정메뉴를 선택하셨습니다.");
@@ -159,7 +166,7 @@ public class BookDao  {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
-            con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Book","root","753698");
+            con = DriverManager.getConnection(url,u,pw);
 
 
             PreparedStatement ps = con.prepareStatement("select * from book");
@@ -180,6 +187,119 @@ public class BookDao  {
             System.out.println("SQLState: " + sqpx.getSQLState());
 
         }
+
+    }
+
+    public void rentBook() throws ClassNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        User user = new User();
+        LocalDate now = LocalDate.now();
+        ResultSet rs;
+        PreparedStatement ps ;
+
+        try{
+            Connection con = null;
+            con = DriverManager.getConnection(url,u,pw);
+
+
+            System.out.println(">> 대여메뉴를 선택하셨습니다.");
+
+            selectData();
+
+            System.out.println(">> 대여하실 책 번호를 입력해주세요.");
+            book.setBookNum(sc.nextInt());
+            sc.nextLine();
+            System.out.println(">> 아이디를 입력해주세요.");
+            user.setId(sc.nextLine());
+
+            ps = con.prepareStatement("select user_num from user where id = ?");
+            ps.setString(1, user.getId());
+            rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                user.setNum(rs.getInt(1));
+            }
+
+
+
+            ps = con.prepareStatement("insert into rental value (?,?,?,?,?)");
+
+            ps.setInt(1,0);
+            ps.setInt(2, book.getBookNum());
+            ps.setInt(3, user.getNum());
+            ps.setString(4, String.valueOf(now));
+            ps.setString(5, null);
+
+
+
+
+            ps.executeUpdate();
+
+            System.out.println(">> 책 대여가 완료되었습니다.");
+
+            ps.close();
+
+
+        } catch (SQLException sqpx){
+            System.out.println("SQLException: "+ sqpx.getMessage());
+            System.out.println("SQLState: " + sqpx.getSQLState());
+
+        }
+
+
+    }
+    public void returnBook() throws ClassNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        User user = new User();
+        LocalDate now = LocalDate.now();
+        ResultSet rs;
+        PreparedStatement ps ;
+
+        try{
+            Connection con = null;
+            con = DriverManager.getConnection(url,u,pw);
+
+
+            System.out.println(">> 반납메뉴를 선택하셨습니다.");
+
+            selectData();
+
+            System.out.println(">> 반납하실 책 번호를 입력해주세요.");
+            book.setBookNum(sc.nextInt());
+            sc.nextLine();
+            System.out.println(">> 아이디를 입력해주세요.");
+            user.setId(sc.nextLine());
+
+            ps = con.prepareStatement("select user_num from user where id = ?");
+            ps.setString(1, user.getId());
+            rs = ps.executeQuery();
+
+            while(rs.next()) {
+                user.setNum(rs.getInt(1));
+            }
+
+
+            ps = con.prepareStatement("insert into rental value (?,?,?,?,?)");
+
+            ps.setInt(1,0);
+            ps.setInt(2, book.getBookNum());
+            ps.setInt(3, user.getNum());
+            ps.setString(4, String.valueOf(now));
+            ps.setString(5, null);
+
+            ps.executeUpdate();
+
+            System.out.println(">> 책 대여가 완료되었습니다.");
+
+            ps.close();
+
+
+        } catch (SQLException sqpx){
+            System.out.println("SQLException: "+ sqpx.getMessage());
+            System.out.println("SQLState: " + sqpx.getSQLState());
+
+        }
+
 
     }
 }
