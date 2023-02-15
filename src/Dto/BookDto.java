@@ -1,15 +1,15 @@
-package Book;
+package Dto;
 
-public class Book {
+public class BookDto {
     private int book_num;
     private String title;
     private String author;
     private String publisher;
     private int price;
 
-    public Book() {}
+    public BookDto() {}
 
-    public Book(String title, String author, String publisher, int price){
+    public BookDto(String title, String author, String publisher, int price){
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -23,13 +23,9 @@ public class Book {
         return title;
     }
 
-    public String getAuthor() {
-        return author;
-    }
+    public String getAuthor() { return author; }
 
-    public String getPublisher() {
-        return publisher;
-    }
+    public String getPublisher() { return publisher; }
 
     public int getPrice() {
         return price;

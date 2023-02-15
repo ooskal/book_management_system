@@ -1,6 +1,7 @@
-package Book;
+package Dao;
 
-import User.User;
+import Dto.BookDto;
+import Dto.UserDto;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,11 +11,11 @@ public class BookDao  {
     private Connection con = null;
     private Statement stmt = null;
 
-    Book book = new Book();
+    BookDto book = new BookDto();
 
-    String url = "jdbc:mysql://127.0.0.1:3306/Book";
-    String u = "root";
-    String pw = "753698";
+    private final String url = "jdbc:mysql://127.0.0.1:3306/Book";
+    private final String u = "root";
+    private final String pw = "753698";
 
 
 
@@ -192,7 +193,7 @@ public class BookDao  {
 
     public void rentBook() throws ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
-        User user = new User();
+        UserDto user = new UserDto();
         LocalDate now = LocalDate.now();
         ResultSet rs;
         PreparedStatement ps ;
@@ -250,10 +251,11 @@ public class BookDao  {
     }
     public void returnBook() throws ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
-        User user = new User();
+        UserDto user = new UserDto();
         LocalDate now = LocalDate.now();
         ResultSet rs;
         PreparedStatement ps ;
+
 
         try{
             Connection con = null;
@@ -262,7 +264,7 @@ public class BookDao  {
 
             System.out.println(">> 반납메뉴를 선택하셨습니다.");
 
-            selectData();
+            userRentHistory();
 
             System.out.println(">> 반납하실 책 번호를 입력해주세요.");
             book.setBookNum(sc.nextInt());
@@ -279,17 +281,13 @@ public class BookDao  {
             }
 
 
-            ps = con.prepareStatement("insert into rental value (?,?,?,?,?)");
+            ps = con.prepareStatement("update rental set return_date = ? where user_num = ?");
 
-            ps.setInt(1,0);
-            ps.setInt(2, book.getBookNum());
-            ps.setInt(3, user.getNum());
-            ps.setString(4, String.valueOf(now));
-            ps.setString(5, null);
-
+            ps.setString(1, String.valueOf(now));
+            ps.setInt(2, user.getNum());
             ps.executeUpdate();
 
-            System.out.println(">> 책 대여가 완료되었습니다.");
+            System.out.println(">> 책 반납이 완료되었습니다.");
 
             ps.close();
 
@@ -300,6 +298,50 @@ public class BookDao  {
 
         }
 
+
+    }
+
+    public void userRentHistory () throws ClassNotFoundException, SQLException {
+        Scanner sc = new Scanner(System.in);
+        UserDto user = new UserDto();
+        ResultSet rs;
+        PreparedStatement ps ;
+        try{
+            Connection con = null;
+            con = DriverManager.getConnection(url,u,pw);
+
+
+            System.out.println(">> 아이디를 입력해주세요.");
+            user.setId(sc.nextLine());
+
+            ps = con.prepareStatement("select user_num from user where id = ?");
+            ps.setString(1, user.getId());
+            rs = ps.executeQuery();
+
+            while(rs.next()) {
+                user.setNum(rs.getInt(1));
+            }
+
+            System.out.println(">> 대여하신 책의 목록입니다.");
+            ps = con.prepareStatement("select a.book_num,a.title,a.author,a.publisher from book as a inner join rental as b on a.book_num = b.book_num where b.user_num=?");
+            ps.setInt(1, user.getNum());
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                System.out.println(rs.getInt(1)+" "+rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4));
+            }
+
+            rs.close();
+            ps.close();
+
+
+
+        } catch (SQLException sqpx){
+            System.out.println("SQLException: "+ sqpx.getMessage());
+            System.out.println("SQLState: " + sqpx.getSQLState());
+
+        }
 
     }
 }

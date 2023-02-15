@@ -1,4 +1,6 @@
-package User;
+package Dao;
+
+import Dto.UserDto;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -8,17 +10,16 @@ public class UserDao {
     private Statement stmt = null;
     private ResultSet rs = null;
 
-    User user = new User();
+    UserDto user = new UserDto();
 
-    String url = "jdbc:mysql://127.0.0.1:3306/Book";
-    String u = "root";
-    String pw = "753698";
-
+    private final String url = "jdbc:mysql://127.0.0.1:3306/Book";
+    private final String u = "root";
+    private final String pw = "753698";
 
 
     public UserDao() {}
 
-    public void inserUser() {
+    public void insertUser() {
 
         Scanner sc = new Scanner(System.in);
         try{
@@ -116,7 +117,7 @@ public class UserDao {
 
     }
 
-    public void  login() throws ClassNotFoundException, SQLException {
+    public void logIn() throws ClassNotFoundException, SQLException {
         Scanner sc = new Scanner(System.in);
         ResultSet rs;
         PreparedStatement ps ;
@@ -124,6 +125,8 @@ public class UserDao {
         try{
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
+
+
 
             System.out.println(">> 로그인 메뉴를 선택하셨습니다.");
             System.out.println(">> 아이디를 입력해주세요.");
@@ -146,7 +149,14 @@ public class UserDao {
                     ps.setString(1, user.getId());
                     rs = ps.executeQuery();
                     while(rs.next()) {
-                       user.setNum(rs.getInt(1));
+                        user.setNum(rs.getInt(1));
+                    }
+                    if(user.getNum() == 1) {
+                        System.out.println(">> 관리자 아이디입니다.");
+                        user.setState(1);
+                    } else {
+                        System.out.println(">> 일반회원입니다.");
+                        user.setState(0);
                     }
 
 
@@ -160,9 +170,6 @@ public class UserDao {
             e.printStackTrace();
         }
 
-
     }
-
-
 
 }
