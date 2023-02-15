@@ -19,39 +19,26 @@ public class UserDao {
 
     public UserDao() {}
 
-    public void insertUser() {
+    public void insertUser(UserDto user) {
 
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
 
+            PreparedStatement ps = con.prepareStatement("insert into user value (?,?,?,?)");
 
-            System.out.println(">> 회원가입 메뉴를 선택하셨습니다..");
-            System.out.println(">> 아이디를 입력해주세요.");
-            user.setId(sc.nextLine());
-            System.out.println(">> 비밀번호를 입력해주세요.");
-            user.setPw(sc.nextLine());
-
-            PreparedStatement ps = con.prepareStatement("insert into user value (?,?,?)");
-
-            ps.setInt(1,0);
+            ps.setInt(1,user.getNum());
             ps.setString(2, user.getId());
             ps.setString(3, user.getPw());
-
-
+            ps.setInt(4,user.getState());
 
             ps.executeUpdate();
-
-            System.out.println(">> 회원가입이 완료되었습니다.");
-
             ps.close();
-
 
         } catch (SQLException sqpx){
             System.out.println("SQLException: "+ sqpx.getMessage());
             System.out.println("SQLState: " + sqpx.getSQLState());
-
         }
 
     }
@@ -117,23 +104,14 @@ public class UserDao {
 
     }
 
-    public void logIn() throws ClassNotFoundException, SQLException {
+    public int logIn(UserDto user) throws ClassNotFoundException, SQLException {
         Scanner sc = new Scanner(System.in);
         ResultSet rs;
-        PreparedStatement ps ;
+        PreparedStatement ps;
 
-        try{
+        try {
             Connection con = null;
-            con = DriverManager.getConnection(url,u,pw);
-
-
-
-            System.out.println(">> 로그인 메뉴를 선택하셨습니다.");
-            System.out.println(">> 아이디를 입력해주세요.");
-            user.setId(sc.nextLine());
-            System.out.println(">> 비밀번호를 입력해주세요.");
-            user.setPw(sc.nextLine());
-
+            con = DriverManager.getConnection(url, u, pw);
 
 
             ps = con.prepareStatement("select pw from user where id=?");
@@ -141,35 +119,42 @@ public class UserDao {
             ps.setString(1, user.getId());
             rs = ps.executeQuery();
 
-            if(rs.next()) {
+            if (rs.next()) {
 
-                if(rs.getString(1).contentEquals(user.getPw())) {
+                if (rs.getString(1).contentEquals((CharSequence) user.getPw())) {
                     System.out.println("로그인 성공");
                     ps = con.prepareStatement("select user_num from user where id = ?");
                     ps.setString(1, user.getId());
                     rs = ps.executeQuery();
-                    while(rs.next()) {
+
+                    while (rs.next()) {
                         user.setNum(rs.getInt(1));
                     }
-                    if(user.getNum() == 1) {
+
+                    if (user.getNum() == 1) {
                         System.out.println(">> 관리자 아이디입니다.");
                         user.setState(1);
+                        return user.getState();
+
                     } else {
                         System.out.println(">> 일반회원입니다.");
                         user.setState(0);
+                        return user.getState();
+
                     }
 
 
-                } else{
+                } else {
 
                 }
             }
 
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
 
+        return 0;
+    }
 }

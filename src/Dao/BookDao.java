@@ -20,22 +20,11 @@ public class BookDao  {
 
 
     // 추가
-    public void insertData () throws ClassNotFoundException, SQLException {
+    public void insertData (BookDto book) throws ClassNotFoundException, SQLException {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
-
-
-            System.out.println(">> 추가메뉴를 선택하셨습니다.");
-            System.out.println(">> 제목을 입력해주세요.");
-            book.setTitle(sc.nextLine());
-            System.out.println(">> 작가를 입력해주세요.");
-            book.setAuthor(sc.nextLine());
-            System.out.println(">> 출판사를 입력해주세요.");
-            book.setPublisher(sc.nextLine());
-            System.out.println(">> 가격을 입력해주세요.");
-            book.setPrice(sc.nextInt());
 
             PreparedStatement ps = con.prepareStatement("insert into book value (?,?,?,?,?)");
 
@@ -47,8 +36,6 @@ public class BookDao  {
 
 
             ps.executeUpdate();
-
-            System.out.println(">> 책 등록이 완료되었습니다.");
 
             ps.close();
 
@@ -344,4 +331,5 @@ public class BookDao  {
         }
 
     }
+
 }

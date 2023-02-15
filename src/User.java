@@ -1,4 +1,7 @@
-public class User implements UserManagement{
+public class User implements UserManagement {
+
+    @Override
+    public void menu(int choice) {}
     @Override
     public void rentalCheck() {}
     @Override

@@ -27,9 +27,7 @@ public class BookDto {
 
     public String getPublisher() { return publisher; }
 
-    public int getPrice() {
-        return price;
-    }
+    public int getPrice() {return price;}
 
     public void setBookNum(int book_num) {this.book_num = book_num;}
 

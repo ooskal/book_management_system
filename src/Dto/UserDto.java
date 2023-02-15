@@ -7,9 +7,7 @@ public class UserDto {
     private String pw;
     private int state; //0 -> 로그아웃 1-> 로그인
 
-    public UserDto() {
-
-    }
+    public UserDto() {}
 
     public UserDto(String id, String pw) {
         this.id = id;
@@ -20,9 +18,7 @@ public class UserDto {
         return user_num;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() {return id;}
 
     public String getPw() {
         return pw;
