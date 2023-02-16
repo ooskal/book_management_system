@@ -9,8 +9,8 @@ public class UserDao {
     private Connection con = null;
     private Statement stmt = null;
     private ResultSet rs = null;
-
-    UserDto user = new UserDto();
+    private Scanner sc = new Scanner(System.in);
+    private PreparedStatement ps;
 
     private final String url = "jdbc:mysql://127.0.0.1:3306/Book";
     private final String u = "root";
@@ -43,27 +43,27 @@ public class UserDao {
 
     }
 
-    public void deleteData () throws ClassNotFoundException, SQLException {
+    public void deleteData (UserDto user) throws ClassNotFoundException, SQLException {
         Scanner sc = new Scanner(System.in);
         try{
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
 
+            ps = con.prepareStatement("select user_num from user where pw=?");
 
-            System.out.println(">> 삭제메뉴를 선택하셨습니다.");
+            ps.setString(1, user.getPw());
+            rs = ps.executeQuery();
 
-            selectData();
+            while (rs.next()) {
+                user.setNum(rs.getInt(1));
+            }
 
-            System.out.println(">> 삭제하실 회원의 번호를 입력해주세요.");
 
-            int num = sc.nextInt();
+            PreparedStatement ps = con.prepareStatement("delete from user where user_num=?");
 
-            PreparedStatement ps = con.prepareStatement("delete from user where user_num="+num);
-
+            ps.setInt(1,user.getNum());
 
             ps.executeUpdate();
-
-            System.out.println(">> 회원탈퇴가 완료되었습니다.");
 
             ps.close();
 
@@ -105,9 +105,7 @@ public class UserDao {
     }
 
     public int logIn(UserDto user) throws ClassNotFoundException, SQLException {
-        Scanner sc = new Scanner(System.in);
         ResultSet rs;
-        PreparedStatement ps;
 
         try {
             Connection con = null;
@@ -140,7 +138,6 @@ public class UserDao {
                         System.out.println(">> 일반회원입니다.");
                         user.setState(0);
                         return user.getState();
-
                     }
 
 
@@ -156,5 +153,9 @@ public class UserDao {
 
 
         return 0;
+    }
+
+    public void logOut() {
+
     }
 }

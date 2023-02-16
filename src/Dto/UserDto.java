@@ -5,7 +5,8 @@ public class UserDto {
     private int user_num;
     private String id;
     private String pw;
-    private int state; //0 -> 로그아웃 1-> 로그인
+    private int state; // 관리자 유저
+
 
     public UserDto() {}
 
@@ -27,6 +28,7 @@ public class UserDto {
     public int getState() {
         return state;
     }
+
     
     public void setId(String id) {
         this.id = id;
@@ -39,6 +41,6 @@ public class UserDto {
     public void setNum(int user_num) {this.user_num = user_num;}
     
     public void setState(int state) {this.state = state;}
-    
+
 
 }
