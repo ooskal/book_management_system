@@ -24,13 +24,12 @@ public class BookDao  {
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
 
-            PreparedStatement ps = con.prepareStatement("insert into book value (?,?,?,?,?)");
+            PreparedStatement ps = con.prepareStatement("insert into book(title, author, publisher, price) value (?,?,?,?)");
 
-            ps.setInt(1,0);
-            ps.setString(2, book.getTitle());
-            ps.setString(3, book.getAuthor());
-            ps.setString(4,book.getPublisher());
-            ps.setInt(5,book.getPrice());
+            ps.setString(1, book.getTitle());
+            ps.setString(2, book.getAuthor());
+            ps.setString(3,book.getPublisher());
+            ps.setInt(4,book.getPrice());
 
 
             ps.executeUpdate();
@@ -79,14 +78,10 @@ public class BookDao  {
             Connection con = null;
             con = DriverManager.getConnection(url,u,pw);
 
-            System.out.println("수정하실 번호를 입력해주세요");
-
-
             sql = "select * from book where book_num=";
             ps = con.prepareStatement(sql+num);
 
             ResultSet rs = ps.executeQuery();
-
 
             if(rs.next()) {
 
@@ -100,22 +95,14 @@ public class BookDao  {
                 System.out.println("번호가 존재하지 않습니다.");
             }
 
-
             sql = ("delete from book where book_num="+num);
 
-
             ps.executeUpdate();
-
-
             ps.close();
-
-
         } catch (SQLException sqpx){
             System.out.println("SQLException: "+ sqpx.getMessage());
             System.out.println("SQLState: " + sqpx.getSQLState());
-
         }
-
     }
 
     //조회
@@ -133,12 +120,8 @@ public class BookDao  {
             while (rs.next()) {
                 System.out.println(rs.getInt(1)+" "+rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) + " " +rs.getInt(5) );
             }
-
             rs.close();
             ps.close();
-
-
-
         } catch (SQLException sqpx){
             System.out.println("SQLException: "+ sqpx.getMessage());
             System.out.println("SQLState: " + sqpx.getSQLState());
@@ -146,6 +129,7 @@ public class BookDao  {
         }
 
     }
+
 
 
 

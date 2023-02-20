@@ -120,7 +120,6 @@ public class UserDao {
             if (rs.next()) {
 
                 if (rs.getString(1).contentEquals((CharSequence) user.getPw())) {
-                    System.out.println("로그인 성공");
                     ps = con.prepareStatement("select user_num from user where id = ?");
                     ps.setString(1, user.getId());
                     rs = ps.executeQuery();
@@ -130,12 +129,10 @@ public class UserDao {
                     }
 
                     if (user.getNum() == 1) {
-                        System.out.println(">> 관리자 아이디입니다.");
                         user.setState(1);
                         return user.getState();
 
                     } else {
-                        System.out.println(">> 일반회원입니다.");
                         user.setState(0);
                         return user.getState();
                     }

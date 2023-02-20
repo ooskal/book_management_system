@@ -19,7 +19,9 @@ public class User implements UserManagement {
     }
 
     @Override
-    public void menu(int choice) throws SQLException, ClassNotFoundException {
+    public void menu() throws SQLException, ClassNotFoundException {
+        int choice = sc.nextInt();
+
         switch (choice) {
             case 1:
                 rentBook();
@@ -34,13 +36,14 @@ public class User implements UserManagement {
                 deleteAccount();
                 break;
             case 5:
-                System.out.println("시스템을 종료합니다.");
+                logout();
                 break;
         }
     }
     @Override
     public void rentalCheck() throws SQLException, ClassNotFoundException {
         UserDto user = new UserDto();
+        sc.nextLine();
         System.out.println(">> 아이디를 입력해주세요.");
         user.setId(sc.nextLine());
         System.out.println(">> 대여하신 책의 목록입니다.");
@@ -48,11 +51,23 @@ public class User implements UserManagement {
 
     }
     @Override
-    public void login() {
-        System.out.println(">> 회원용 메뉴입니다.");
+    public void login() throws SQLException, ClassNotFoundException {
+        menuPick();
+        menu();
     }
+
     @Override
-    public void logout() {}
+    public void logout() throws SQLException, ClassNotFoundException {
+        BookMain bookMain = new BookMain();
+        System.out.println(">> 로그아웃을 합니다.");
+        bookMain.start();
+    }
+
+    @Override
+    public void menuPick() {
+        System.out.println(">> 메뉴를 선택해주세요.");
+        System.out.println(">> 1. 대여  2. 반납  3. 조회  4. 회원탈퇴  5. 로그아웃");
+    }
 
     public void rentBook() throws SQLException, ClassNotFoundException {
         UserDto user = new UserDto();
@@ -73,6 +88,7 @@ public class User implements UserManagement {
         UserDto user = new UserDto();
         BookDto book = new BookDto();
         System.out.println(">> 반납메뉴를 선택하셨습니다.");
+        sc.nextLine();
         rentalCheck();
         System.out.println(">> 반납하실 책 번호를 입력해주세요.");
         book.setBookNum(sc.nextInt());
@@ -93,6 +109,20 @@ public class User implements UserManagement {
         System.out.println(">> 회원탈퇴가 완료되었습니다.");
 
 
+    }
+
+    public void signUp() {
+        UserDto userDto = new UserDto();
+        System.out.println(">> 회원가입을 선택하셨습니다.");
+        sc.nextLine();
+        System.out.println(">> 아이디를 입력해주세요.");
+        userDto.setId(sc.nextLine());
+        System.out.println(">> 비밀번호를 입력해주세요.");
+        userDto.setPw(sc.nextLine());
+        userDto.setState(0);
+        userDto.setNum(0);
+        userDao.insertUser(userDto);
+        System.out.println(">> 회원가입이 완료되었습니다.");
     }
 
 }

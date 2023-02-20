@@ -52,6 +52,7 @@ public class RentalDao {
     }
     public void rentBook(BookDto book, UserDto user) throws ClassNotFoundException {
         LocalDate now = LocalDate.now();
+        BookDao bookDao = new BookDao();
 
 
         try{
@@ -76,6 +77,12 @@ public class RentalDao {
             ps.setString(4, String.valueOf(now));
             ps.setString(5, null);
 
+            ps = con.prepareStatement("update book set rental_yn=? where book_num =?");
+
+            ps.setInt(1,1);
+            ps.setInt(2,book.getBookNum());
+
+
             ps.executeUpdate();
 
             ps.close();
@@ -96,7 +103,7 @@ public class RentalDao {
         LocalDate now = LocalDate.now();
         ResultSet rs;
         PreparedStatement ps ;
-
+            //booknum, id 받음
 
 
         try{
@@ -109,30 +116,30 @@ public class RentalDao {
 
             while(rs.next()) {
                 user.setNum(rs.getInt(1));
-            }
+            } // 유저넘버 받음
 
-            ps = con.prepareStatement("select book_num from rental where user_num=?" );
-            ps.setInt(1,user.getNum());
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                book.setBookNum(rs.getInt(1));
-            }
-
-            ps = con.prepareStatement("select id from rental where user_num = ? and book_num = ?");
-
+            ps = con.prepareStatement("select id from rental where user_num=? and book_num=?" );
             ps.setInt(1,user.getNum());
             ps.setInt(2,book.getBookNum());
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                RentalDto.setId(rs.getInt(1));
+                rentalDto.setId(rs.getInt(1));
             }
 
             ps = con.prepareStatement("update rental set return_date =? where id =?");
 
             ps.setString(1, String.valueOf(now));
-            ps.setInt(2, RentalDto.getId());
+            ps.setInt(2, rentalDto.getId());
+
+
+            ps.executeUpdate();
+
+            ps = con.prepareStatement("update book set rental_yn=? where book_num =?");
+
+            ps.setInt(1,0);
+            ps.setInt(2,book.getBookNum());
+
 
             ps.executeUpdate();
 

@@ -23,7 +23,9 @@ public class Admin implements UserManagement {
     int num = 0;
     Scanner sc = new Scanner(System.in);
     @Override
-    public void menu(int choice) throws SQLException, ClassNotFoundException {
+    public void menu() throws SQLException, ClassNotFoundException {
+        int choice = sc.nextInt();
+
         switch (choice) {
             case 1:
                 insertData();
@@ -38,7 +40,7 @@ public class Admin implements UserManagement {
                 rentalCheck();
                 break;
             case 5:
-                System.out.println("시스템을 종료합니다.");
+                logout();
                 break;
         }
     }
@@ -51,11 +53,34 @@ public class Admin implements UserManagement {
         rentalDao.selectData();
     }
     @Override
-    public void login() {
-        System.out.println(">> 관리자용 메뉴입니다.");
+    public void login() throws SQLException, ClassNotFoundException {
+        User user = new User();
+        UserDto userDto = new UserDto();
+     //   System.out.println(">> 로그인을 선택하셨습니다.");
+     //   sc.nextLine();
+     //   System.out.println(">> 아이디를 입력해주세요.");
+//        System.out.println(">> 비밀번호를 입력해주세요.");
+      //  userDto.setPw(sc.nextLine());
+     //   userDao.logIn(userDto);
+     //   System.out.println(userDto.getState());
+            menuPick();
+            menu();
+
     }
+
     @Override
-    public void logout() {}
+    public void logout() throws SQLException, ClassNotFoundException {
+        BookMain bookMain = new BookMain();
+        System.out.println(">> 로그아웃을 합니다.");
+        bookMain.start();
+    }
+
+    @Override
+    public void menuPick() {
+        System.out.println(">> 메뉴를 선택해주세요.");
+        System.out.println(">> 1. 추가  2. 삭제  3. 수정  4. 조회  5. 로그아웃");
+
+    }
 
     public void insertData() throws SQLException, ClassNotFoundException {
         BookDto bookDto = new BookDto();

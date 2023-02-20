@@ -5,18 +5,14 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class BookMain {
-    private Admin admin;
-    private User user;
     private UserDao userDao;
+    private UserManagement userManagement;
 
     public BookMain() {
-        this.admin = new Admin();
-        this.user = new User();
         this.userDao = new UserDao();
     }
+
     private Scanner sc = new Scanner(System.in);
-
-
 
 
     public void start() throws SQLException, ClassNotFoundException {
@@ -25,8 +21,6 @@ public class BookMain {
 
         UserManagement userManagement = new User();
 
-
-
         userManagement.login();
     }
 
@@ -34,18 +28,32 @@ public class BookMain {
         System.out.println(">> 1. 로그인  2. 회원가입");
         int num = 0;
         num = sc.nextInt();
-
-            switch (num) {
+        switch (num) {
                 case 1:
-                    login();
-                    break;
+                UserDto userDto = new UserDto();
+
+                int userCheck = login();
+                System.out.println(userDto.getState());
+
+                if (userCheck == 1) {
+                    this.userManagement = new Admin();
+                    userManagement.login();
+                } else if (userCheck == 0) {
+                    this.userManagement = new User();
+                    userManagement.login();
+                }
+                userManagement.login();
+                break;
                 case 2:
-                    signUp();
-                    break;
-                    }
+                User user = new User();
+                user.signUp();
+                break;
+        }
+
+
     }
 
-    public void login() throws SQLException, ClassNotFoundException {
+    public int login() throws SQLException, ClassNotFoundException {
         UserDto userDto = new UserDto();
         System.out.println(">> 로그인을 선택하셨습니다.");
         sc.nextLine();
@@ -54,37 +62,10 @@ public class BookMain {
         System.out.println(">> 비밀번호를 입력해주세요.");
         userDto.setPw(sc.nextLine());
         userDao.logIn(userDto);
-        System.out.println(userDto.getState());
 
 
-        if(userDto.getState() == 1){
-            admin.login();
-            System.out.println(">> 메뉴를 선택해주세요.");
-            System.out.println(">> 1. 추가  2. 삭제  3. 수정  4. 조회  5. 종료");
-            int num =sc.nextInt();
-            admin.menu(num);
-        }
-        else {
-            user.login();
-            System.out.println(">> 메뉴를 선택해주세요.");
-            System.out.println(">> 1. 대여  2. 반납  3. 조회  4. 회원탈퇴  5. 종료");
-            int num = sc.nextInt();
-            user.menu(num);
-        }
+        return userDto.getState();
     }
 
-    public void signUp() {
-        UserDto userDto = new UserDto();
-        System.out.println(">> 회원가입을 선택하셨습니다.");
-        sc.nextLine();
-        System.out.println(">> 아이디를 입력해주세요.");
-        userDto.setId(sc.nextLine());
-        System.out.println(">> 비밀번호를 입력해주세요.");
-        userDto.setPw(sc.nextLine());
-        userDto.setState(0);
-        userDto.setNum(0);
-        userDao.insertUser(userDto);
-        System.out.println(">> 회원가입이 완료되었습니다.");
-    }
 
 }
